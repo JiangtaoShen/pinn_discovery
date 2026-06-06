@@ -41,22 +41,25 @@
 
   .stats{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;}
   .stat{background:var(--chip);border-radius:9px;padding:8px 12px;line-height:1.15;}
-  .stat .k{display:block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);}
+  .stat .k{display:block;font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--muted);}
   .stat .v{display:block;font-size:15px;font-weight:700;color:var(--ink);
     font-feature-settings:"tnum";margin-top:2px;}
   .stat .v.good{color:var(--accent);}
 
-  footer.page{margin-top:46px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:18px;}
+  .soon{margin-top:26px;padding:24px;border:1.5px dashed #cfd6dd;border-radius:16px;text-align:center;
+    color:var(--muted);font-size:15px;font-weight:600;background:rgba(255,255,255,.45);}
 </style>
 </head>
 <body>
   <div class="wrap">
     <header class="page">
       <div class="eyebrow">Physics-Informed Neural Networks</div>
-      <h1>PINN discovery <span class="of">— select a problem</span></h1>
-      <p class="lede">Automated architecture &amp; physics search across four benchmark problems.
-        Each dashboard shows the full search tree, knowledge matrix, and convergence history.
-        Pick one to explore — you can switch between them anytime from the menu in the top-right corner.</p>
+      <h1>PINN discovery</h1>
+      <p class="lede">Fully automated PINN discovery driven by tree search over a curated knowledge base.
+        Rather than tuning PINN components in isolation, it designs a complete PINN method in a single pass &mdash;
+        loss formulation, network architecture, and training strategy together.
+        The four case studies below demonstrate the approach.
+        Each dashboard shows the full search tree, knowledge matrix, and convergence history.</p>
     </header>
 
     <div class="grid">
@@ -123,7 +126,7 @@
 
     </div>
 
-    <footer class="page">PINN discovery &middot; 4 benchmark problems</footer>
+    <div class="soon">More case studies coming soon&hellip;</div>
   </div>
 </body>
 </html>
