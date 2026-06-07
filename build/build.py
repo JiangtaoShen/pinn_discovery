@@ -21,6 +21,17 @@ then commit & push to deploy via GitHub Pages.
 """
 import os, re, json, sys
 
+try:
+    import numpy as _np
+    import matplotlib as _mpl
+    _mpl.use("Agg")
+    import matplotlib.pyplot as _plt
+    HAVE_MPL = True
+    _MPL_ERR = ""
+except Exception as _e:          # pragma: no cover
+    HAVE_MPL = False
+    _MPL_ERR = str(_e)
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)                       # E:\pinn_discovery_show
 CFG  = json.load(open(os.path.join(HERE, "cases.json"), encoding="utf-8"))
@@ -105,13 +116,18 @@ OV_CSS = """  :root{
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:40px;}
   @media (max-width:760px){.grid{grid-template-columns:1fr;} h1{font-size:32px;}}
 
-  a.card{display:flex;flex-direction:column;gap:14px;text-decoration:none;color:inherit;
+  a.card{display:flex;flex-direction:row;gap:18px;align-items:stretch;text-decoration:none;color:inherit;
     background:#fff;border-radius:16px;padding:24px 24px 22px;border:1px solid transparent;
     box-shadow:0 2px 10px rgba(15,23,42,.10),0 1px 3px rgba(15,23,42,.06);
     transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;}
   a.card:hover{transform:translateY(-4px);
     box-shadow:0 14px 34px rgba(15,23,42,.16),0 3px 8px rgba(15,23,42,.08);
     border-color:#d4e2f7;}
+  .card-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:14px;}
+  .thumb{flex:0 0 auto;align-self:center;width:128px;height:128px;border-radius:12px;overflow:hidden;
+    background:#1b1f3a;box-shadow:inset 0 0 0 1px rgba(15,23,42,.12);}
+  .thumb img{width:100%;height:100%;display:block;object-fit:cover;}
+  @media (max-width:760px){.thumb{width:104px;height:104px;}}
 
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
   .idx{font-size:15px;font-weight:700;color:#fff;background:var(--ink);
@@ -137,21 +153,29 @@ def highlight_re(tag):
     return re.sub(r"(Re = \d+)", r'<span class="re">\1</span>', tag)
 
 def card_html(c, idx):
+    thumb = ""
+    if os.path.isfile(os.path.join(ROOT, c["slug"], "field.png")):
+        thumb = ('        <div class="thumb"><img src="./%s/field.png" '
+                 'alt="%s reference solution field" loading="lazy"></div>\n'
+                 % (c["slug"], c["card_title"]))
     return (
         '      <a class="card" href="./%s/index.html">\n' % c["slug"] +
-        '        <div class="card-top">\n'
-        '          <span class="idx">%d</span>\n' % idx +
-        '          <span class="arrow">&rarr;</span>\n'
+        '        <div class="card-main">\n'
+        '          <div class="card-top">\n'
+        '            <span class="idx">%d</span>\n' % idx +
+        '            <span class="arrow">&rarr;</span>\n'
+        '          </div>\n'
+        '          <div>\n'
+        '            <p class="ctitle">%s</p>\n' % c["card_title"] +
+        '            <p class="ctag">%s</p>\n' % highlight_re(c["card_tag"]) +
+        '          </div>\n'
+        '          <div class="stats">\n'
+        '            <span class="stat"><span class="k">Tree</span><span class="v">%s nodes</span></span>\n' % c["nodes"] +
+        '            <span class="stat"><span class="k">Runtime</span><span class="v">%s s</span></span>\n' % c["runtime"] +
+        '            <span class="stat"><span class="k">Best %s</span><span class="v good">%s</span></span>\n' % (c["metric"], c["rrmse"]) +
+        '          </div>\n'
         '        </div>\n'
-        '        <div>\n'
-        '          <p class="ctitle">%s</p>\n' % c["card_title"] +
-        '          <p class="ctag">%s</p>\n' % highlight_re(c["card_tag"]) +
-        '        </div>\n'
-        '        <div class="stats">\n'
-        '          <span class="stat"><span class="k">Tree</span><span class="v">%s nodes</span></span>\n' % c["nodes"] +
-        '          <span class="stat"><span class="k">Runtime</span><span class="v">%s s</span></span>\n' % c["runtime"] +
-        '          <span class="stat"><span class="k">Best %s</span><span class="v good">%s</span></span>\n' % (c["metric"], c["rrmse"]) +
-        '        </div>\n'
+        + thumb +
         '      </a>'
     )
 
@@ -197,6 +221,39 @@ def extract_stats(html):
     rr = ("%.5f" % float(met.group(2))) if met else "?"
     return nodes, metric, rr
 
+# ---------------------------------------------------------------- reference-field thumbnail
+def generate_field(case):
+    """Render the ground-truth solution field to <slug>/field.png (square, viridis).
+    1-D PDEs (t,x,u) -> u(t,x) heatmap; LDC (x,y,u,v,p) -> speed |U| heatmap."""
+    if not HAVE_MPL:
+        return False
+    app = case.get("ref_app", case["app"])
+    csv = os.path.join(SRC, "apps", app, "ref_data.csv")
+    if not os.path.isfile(csv):
+        return False
+    out = os.path.join(ROOT, case["slug"], "field.png")
+    if os.path.isfile(out) and os.path.getmtime(out) >= os.path.getmtime(csv):
+        return True                                   # already up to date
+    d = _np.loadtxt(csv, delimiter=",", skiprows=1)
+    if d.shape[1] == 3:                               # t,x,u  (rows=x vertical, cols=t horizontal)
+        a, b, u = d[:, 0], d[:, 1], d[:, 2]
+        au, bu = _np.unique(a), _np.unique(b)
+        G = _np.full((len(bu), len(au)), _np.nan)
+        G[_np.searchsorted(bu, b), _np.searchsorted(au, a)] = u
+    else:                                             # x,y,u,v,p -> speed magnitude
+        x, y, u, v = d[:, 0], d[:, 1], d[:, 2], d[:, 3]
+        sp = _np.hypot(u, v)
+        xu, yu = _np.unique(x), _np.unique(y)
+        G = _np.full((len(yu), len(xu)), _np.nan)
+        G[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = sp
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
+    ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
+    ax.imshow(G, origin="lower", aspect="auto", cmap="viridis", interpolation="bilinear")
+    fig.savefig(out, dpi=200)
+    _plt.close(fig)
+    return True
+
 # ---------------------------------------------------------------- main
 def main():
     avail = []
@@ -227,10 +284,15 @@ def main():
         os.makedirs(outdir, exist_ok=True)
         open(os.path.join(outdir, "index.html"), "wb").write(raw.encode("utf-8"))
 
+    # reference-field thumbnails
+    if not HAVE_MPL:
+        print("WARN  numpy/matplotlib unavailable (%s) — skipping field thumbnails" % _MPL_ERR)
+    nthumb = sum(1 for c in avail if generate_field(c))
+
     # overview
     open(os.path.join(ROOT, "index.html"), "wb").write(build_overview(avail).encode("utf-8"))
 
-    print("\nBuilt %d case(s):" % len(avail))
+    print("\nBuilt %d case(s) · %d field thumbnail(s):" % (len(avail), nthumb))
     print("  %-22s %-6s %-8s %-9s %s" % ("slug", "nodes", "runtime", "metric", "best"))
     for i, c in enumerate(avail):
         print("  %d. %-19s %-6s %-8s %-9s %s"

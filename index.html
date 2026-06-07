@@ -21,13 +21,18 @@
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:40px;}
   @media (max-width:760px){.grid{grid-template-columns:1fr;} h1{font-size:32px;}}
 
-  a.card{display:flex;flex-direction:column;gap:14px;text-decoration:none;color:inherit;
+  a.card{display:flex;flex-direction:row;gap:18px;align-items:stretch;text-decoration:none;color:inherit;
     background:#fff;border-radius:16px;padding:24px 24px 22px;border:1px solid transparent;
     box-shadow:0 2px 10px rgba(15,23,42,.10),0 1px 3px rgba(15,23,42,.06);
     transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;}
   a.card:hover{transform:translateY(-4px);
     box-shadow:0 14px 34px rgba(15,23,42,.16),0 3px 8px rgba(15,23,42,.08);
     border-color:#d4e2f7;}
+  .card-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:14px;}
+  .thumb{flex:0 0 auto;align-self:center;width:128px;height:128px;border-radius:12px;overflow:hidden;
+    background:#1b1f3a;box-shadow:inset 0 0 0 1px rgba(15,23,42,.12);}
+  .thumb img{width:100%;height:100%;display:block;object-fit:cover;}
+  @media (max-width:760px){.thumb{width:104px;height:104px;}}
 
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
   .idx{font-size:15px;font-weight:700;color:#fff;background:var(--ink);
@@ -65,99 +70,117 @@
     <div class="grid">
 
       <a class="card" href="./burgers/index.html">
-        <div class="card-top">
-          <span class="idx">1</span>
-          <span class="arrow">&rarr;</span>
+        <div class="card-main">
+          <div class="card-top">
+            <span class="idx">1</span>
+            <span class="arrow">&rarr;</span>
+          </div>
+          <div>
+            <p class="ctitle">Burgers Equation</p>
+            <p class="ctag">Nonlinear convection–diffusion · 1-D PDE</p>
+          </div>
+          <div class="stats">
+            <span class="stat"><span class="k">Tree</span><span class="v">51 nodes</span></span>
+            <span class="stat"><span class="k">Runtime</span><span class="v">120 s</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.00045</span></span>
+          </div>
         </div>
-        <div>
-          <p class="ctitle">Burgers Equation</p>
-          <p class="ctag">Nonlinear convection–diffusion · 1-D PDE</p>
-        </div>
-        <div class="stats">
-          <span class="stat"><span class="k">Tree</span><span class="v">51 nodes</span></span>
-          <span class="stat"><span class="k">Runtime</span><span class="v">120 s</span></span>
-          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.00045</span></span>
-        </div>
+        <div class="thumb"><img src="./burgers/field.png" alt="Burgers Equation reference solution field" loading="lazy"></div>
       </a>
 
       <a class="card" href="./ks-chaotic/index.html">
-        <div class="card-top">
-          <span class="idx">2</span>
-          <span class="arrow">&rarr;</span>
+        <div class="card-main">
+          <div class="card-top">
+            <span class="idx">2</span>
+            <span class="arrow">&rarr;</span>
+          </div>
+          <div>
+            <p class="ctitle">Chaotic Kuramoto–Sivashinsky</p>
+            <p class="ctag">Spatiotemporal chaos · 1-D PDE</p>
+          </div>
+          <div class="stats">
+            <span class="stat"><span class="k">Tree</span><span class="v">161 nodes</span></span>
+            <span class="stat"><span class="k">Runtime</span><span class="v">300 s</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.09380</span></span>
+          </div>
         </div>
-        <div>
-          <p class="ctitle">Chaotic Kuramoto–Sivashinsky</p>
-          <p class="ctag">Spatiotemporal chaos · 1-D PDE</p>
-        </div>
-        <div class="stats">
-          <span class="stat"><span class="k">Tree</span><span class="v">161 nodes</span></span>
-          <span class="stat"><span class="k">Runtime</span><span class="v">300 s</span></span>
-          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.09380</span></span>
-        </div>
+        <div class="thumb"><img src="./ks-chaotic/field.png" alt="Chaotic Kuramoto–Sivashinsky reference solution field" loading="lazy"></div>
       </a>
 
       <a class="card" href="./allen-cahn/index.html">
-        <div class="card-top">
-          <span class="idx">3</span>
-          <span class="arrow">&rarr;</span>
+        <div class="card-main">
+          <div class="card-top">
+            <span class="idx">3</span>
+            <span class="arrow">&rarr;</span>
+          </div>
+          <div>
+            <p class="ctitle">Allen-Cahn Equation</p>
+            <p class="ctag">Phase-field reaction–diffusion · 1-D PDE</p>
+          </div>
+          <div class="stats">
+            <span class="stat"><span class="k">Tree</span><span class="v">51 nodes</span></span>
+            <span class="stat"><span class="k">Runtime</span><span class="v">120 s</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.00195</span></span>
+          </div>
         </div>
-        <div>
-          <p class="ctitle">Allen-Cahn Equation</p>
-          <p class="ctag">Phase-field reaction–diffusion · 1-D PDE</p>
-        </div>
-        <div class="stats">
-          <span class="stat"><span class="k">Tree</span><span class="v">51 nodes</span></span>
-          <span class="stat"><span class="k">Runtime</span><span class="v">120 s</span></span>
-          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.00195</span></span>
-        </div>
+        <div class="thumb"><img src="./allen-cahn/field.png" alt="Allen-Cahn Equation reference solution field" loading="lazy"></div>
       </a>
 
       <a class="card" href="./ldc-re3200/index.html">
-        <div class="card-top">
-          <span class="idx">4</span>
-          <span class="arrow">&rarr;</span>
+        <div class="card-main">
+          <div class="card-top">
+            <span class="idx">4</span>
+            <span class="arrow">&rarr;</span>
+          </div>
+          <div>
+            <p class="ctitle">Lid-Driven Cavity</p>
+            <p class="ctag">Steady incompressible flow · <span class="re">Re = 3200</span></p>
+          </div>
+          <div class="stats">
+            <span class="stat"><span class="k">Tree</span><span class="v">201 nodes</span></span>
+            <span class="stat"><span class="k">Runtime</span><span class="v">150 s</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.04112</span></span>
+          </div>
         </div>
-        <div>
-          <p class="ctitle">Lid-Driven Cavity</p>
-          <p class="ctag">Steady incompressible flow · <span class="re">Re = 3200</span></p>
-        </div>
-        <div class="stats">
-          <span class="stat"><span class="k">Tree</span><span class="v">201 nodes</span></span>
-          <span class="stat"><span class="k">Runtime</span><span class="v">150 s</span></span>
-          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.04112</span></span>
-        </div>
+        <div class="thumb"><img src="./ldc-re3200/field.png" alt="Lid-Driven Cavity reference solution field" loading="lazy"></div>
       </a>
 
       <a class="card" href="./ldc-re3200-extended/index.html">
-        <div class="card-top">
-          <span class="idx">5</span>
-          <span class="arrow">&rarr;</span>
+        <div class="card-main">
+          <div class="card-top">
+            <span class="idx">5</span>
+            <span class="arrow">&rarr;</span>
+          </div>
+          <div>
+            <p class="ctitle">Lid-Driven Cavity</p>
+            <p class="ctag">Steady incompressible flow · <span class="re">Re = 3200</span></p>
+          </div>
+          <div class="stats">
+            <span class="stat"><span class="k">Tree</span><span class="v">401 nodes</span></span>
+            <span class="stat"><span class="k">Runtime</span><span class="v">150 s</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.07716</span></span>
+          </div>
         </div>
-        <div>
-          <p class="ctitle">Lid-Driven Cavity</p>
-          <p class="ctag">Steady incompressible flow · <span class="re">Re = 3200</span></p>
-        </div>
-        <div class="stats">
-          <span class="stat"><span class="k">Tree</span><span class="v">401 nodes</span></span>
-          <span class="stat"><span class="k">Runtime</span><span class="v">150 s</span></span>
-          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.07716</span></span>
-        </div>
+        <div class="thumb"><img src="./ldc-re3200-extended/field.png" alt="Lid-Driven Cavity reference solution field" loading="lazy"></div>
       </a>
 
       <a class="card" href="./ldc-re5000/index.html">
-        <div class="card-top">
-          <span class="idx">6</span>
-          <span class="arrow">&rarr;</span>
+        <div class="card-main">
+          <div class="card-top">
+            <span class="idx">6</span>
+            <span class="arrow">&rarr;</span>
+          </div>
+          <div>
+            <p class="ctitle">Lid-Driven Cavity</p>
+            <p class="ctag">Steady incompressible flow · <span class="re">Re = 5000</span></p>
+          </div>
+          <div class="stats">
+            <span class="stat"><span class="k">Tree</span><span class="v">201 nodes</span></span>
+            <span class="stat"><span class="k">Runtime</span><span class="v">150 s</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.07501</span></span>
+          </div>
         </div>
-        <div>
-          <p class="ctitle">Lid-Driven Cavity</p>
-          <p class="ctag">Steady incompressible flow · <span class="re">Re = 5000</span></p>
-        </div>
-        <div class="stats">
-          <span class="stat"><span class="k">Tree</span><span class="v">201 nodes</span></span>
-          <span class="stat"><span class="k">Runtime</span><span class="v">150 s</span></span>
-          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.07501</span></span>
-        </div>
+        <div class="thumb"><img src="./ldc-re5000/field.png" alt="Lid-Driven Cavity reference solution field" loading="lazy"></div>
       </a>
 
     </div>
