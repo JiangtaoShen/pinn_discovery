@@ -16,7 +16,6 @@
   header.page{margin-bottom:40px;}
   .eyebrow{font-size:15px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);}
   h1{font-size:40px;line-height:1.12;margin:12px 0 10px;font-weight:750;letter-spacing:-.01em;}
-  h1 .of{color:var(--muted);font-weight:600;}
   .lede{font-size:17px;color:var(--muted);max-width:680px;line-height:1.55;margin:0;}
 
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:40px;}
@@ -57,9 +56,9 @@
       <div class="eyebrow">Physics-Informed Neural Networks</div>
       <h1>PINN Discovery</h1>
       <p class="lede">Fully automated PINN Discovery driven by tree search over a curated knowledge base.
-        Rather than tuning PINN components in isolation, it designs a complete PINN method in a single pass &mdash;
+        Rather than tuning PINN components in isolation, it designs a complete PINN method in a single pass —
         loss formulation, network architecture, and training strategy together.
-        The five case studies below demonstrate the approach.
+        The six case studies below demonstrate the approach.
         Each dashboard shows the full search tree, knowledge matrix, and convergence history.</p>
     </header>
 
@@ -72,7 +71,7 @@
         </div>
         <div>
           <p class="ctitle">Burgers Equation</p>
-          <p class="ctag">Nonlinear convection&ndash;diffusion &middot; 1-D PDE</p>
+          <p class="ctag">Nonlinear convection–diffusion · 1-D PDE</p>
         </div>
         <div class="stats">
           <span class="stat"><span class="k">Tree</span><span class="v">51 nodes</span></span>
@@ -87,24 +86,40 @@
           <span class="arrow">&rarr;</span>
         </div>
         <div>
-          <p class="ctitle">Chaotic Kuramoto&ndash;Sivashinsky</p>
-          <p class="ctag">Spatiotemporal chaos &middot; 1-D PDE</p>
+          <p class="ctitle">Chaotic Kuramoto–Sivashinsky</p>
+          <p class="ctag">Spatiotemporal chaos · 1-D PDE</p>
         </div>
         <div class="stats">
-          <span class="stat"><span class="k">Tree</span><span class="v">127 nodes</span></span>
+          <span class="stat"><span class="k">Tree</span><span class="v">161 nodes</span></span>
           <span class="stat"><span class="k">Runtime</span><span class="v">300 s</span></span>
-          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.26736</span></span>
+          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.09380</span></span>
         </div>
       </a>
 
-      <a class="card" href="./ldc-re3200/index.html">
+      <a class="card" href="./allen-cahn/index.html">
         <div class="card-top">
           <span class="idx">3</span>
           <span class="arrow">&rarr;</span>
         </div>
         <div>
+          <p class="ctitle">Allen-Cahn Equation</p>
+          <p class="ctag">Phase-field reaction–diffusion · 1-D PDE</p>
+        </div>
+        <div class="stats">
+          <span class="stat"><span class="k">Tree</span><span class="v">51 nodes</span></span>
+          <span class="stat"><span class="k">Runtime</span><span class="v">120 s</span></span>
+          <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.00195</span></span>
+        </div>
+      </a>
+
+      <a class="card" href="./ldc-re3200/index.html">
+        <div class="card-top">
+          <span class="idx">4</span>
+          <span class="arrow">&rarr;</span>
+        </div>
+        <div>
           <p class="ctitle">Lid-Driven Cavity</p>
-          <p class="ctag">Steady incompressible flow &middot; <span class="re">Re = 3200</span></p>
+          <p class="ctag">Steady incompressible flow · <span class="re">Re = 3200</span></p>
         </div>
         <div class="stats">
           <span class="stat"><span class="k">Tree</span><span class="v">201 nodes</span></span>
@@ -115,12 +130,12 @@
 
       <a class="card" href="./ldc-re3200-extended/index.html">
         <div class="card-top">
-          <span class="idx">4</span>
+          <span class="idx">5</span>
           <span class="arrow">&rarr;</span>
         </div>
         <div>
           <p class="ctitle">Lid-Driven Cavity</p>
-          <p class="ctag">Steady incompressible flow &middot; <span class="re">Re = 3200</span></p>
+          <p class="ctag">Steady incompressible flow · <span class="re">Re = 3200</span></p>
         </div>
         <div class="stats">
           <span class="stat"><span class="k">Tree</span><span class="v">401 nodes</span></span>
@@ -131,12 +146,12 @@
 
       <a class="card" href="./ldc-re5000/index.html">
         <div class="card-top">
-          <span class="idx">5</span>
+          <span class="idx">6</span>
           <span class="arrow">&rarr;</span>
         </div>
         <div>
           <p class="ctitle">Lid-Driven Cavity</p>
-          <p class="ctag">Steady incompressible flow &middot; <span class="re">Re = 5000</span></p>
+          <p class="ctag">Steady incompressible flow · <span class="re">Re = 5000</span></p>
         </div>
         <div class="stats">
           <span class="stat"><span class="k">Tree</span><span class="v">201 nodes</span></span>
@@ -147,7 +162,7 @@
 
     </div>
 
-    <div class="soon">More case studies coming soon&hellip;</div>
+    <div class="soon">More case studies coming soon…</div>
   </div>
 </body>
 </html>
