@@ -116,7 +116,7 @@ OV_CSS = """  :root{
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:40px;}
   @media (max-width:760px){.grid{grid-template-columns:1fr;} h1{font-size:32px;}}
 
-  a.card{display:flex;flex-direction:row;gap:18px;align-items:stretch;text-decoration:none;color:inherit;
+  a.card{position:relative;display:flex;flex-direction:row;gap:18px;align-items:stretch;text-decoration:none;color:inherit;
     background:#fff;border-radius:16px;padding:24px 24px 22px;border:1px solid transparent;
     box-shadow:0 2px 10px rgba(15,23,42,.10),0 1px 3px rgba(15,23,42,.06);
     transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;}
@@ -124,7 +124,7 @@ OV_CSS = """  :root{
     box-shadow:0 14px 34px rgba(15,23,42,.16),0 3px 8px rgba(15,23,42,.08);
     border-color:#d4e2f7;}
   .card-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:14px;}
-  .thumb{flex:0 0 auto;align-self:center;width:128px;height:128px;border-radius:12px;overflow:hidden;
+  .thumb{flex:0 0 auto;align-self:flex-start;margin-top:26px;width:128px;height:128px;border-radius:12px;overflow:hidden;
     background:#1b1f3a;box-shadow:inset 0 0 0 1px rgba(15,23,42,.12);}
   .thumb img{width:100%;height:100%;display:block;object-fit:cover;}
   @media (max-width:760px){.thumb{width:104px;height:104px;}}
@@ -132,7 +132,7 @@ OV_CSS = """  :root{
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
   .idx{font-size:15px;font-weight:700;color:#fff;background:var(--ink);
     width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
-  .arrow{color:var(--muted);font-size:20px;transition:transform .16s ease,color .16s ease;}
+  .arrow{position:absolute;top:22px;right:24px;color:var(--muted);font-size:20px;transition:transform .16s ease,color .16s ease;}
   a.card:hover .arrow{transform:translateX(4px);color:var(--accent);}
 
   .ctitle{font-size:20px;font-weight:700;margin:0;line-height:1.2;}
@@ -253,7 +253,7 @@ def generate_field(case):
     os.makedirs(os.path.dirname(out), exist_ok=True)
     fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
     ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
-    ax.imshow(G, origin="lower", aspect="auto", cmap="viridis", interpolation="bilinear", vmin=vmin, vmax=vmax)
+    ax.imshow(G, origin="lower", aspect="auto", cmap="turbo", interpolation="bilinear", vmin=vmin, vmax=vmax)
     fig.savefig(out, dpi=200)
     _plt.close(fig)
     return True
