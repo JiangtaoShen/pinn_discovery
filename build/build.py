@@ -232,24 +232,28 @@ def generate_field(case):
     if not os.path.isfile(csv):
         return False
     out = os.path.join(ROOT, case["slug"], "field.png")
-    if os.path.isfile(out) and os.path.getmtime(out) >= os.path.getmtime(csv):
+    fresh = max(os.path.getmtime(csv), os.path.getmtime(__file__))   # rebuild if data OR this script changed
+    if os.path.isfile(out) and os.path.getmtime(out) >= fresh:
         return True                                   # already up to date
     d = _np.loadtxt(csv, delimiter=",", skiprows=1)
-    if d.shape[1] == 3:                               # t,x,u  (rows=x vertical, cols=t horizontal)
+    vmin = vmax = None
+    if d.shape[1] == 3:                               # t,x,u  -> u(t,x)  (rows=x vert, cols=t horiz)
         a, b, u = d[:, 0], d[:, 1], d[:, 2]
         au, bu = _np.unique(a), _np.unique(b)
         G = _np.full((len(bu), len(au)), _np.nan)
         G[_np.searchsorted(bu, b), _np.searchsorted(au, a)] = u
-    else:                                             # x,y,u,v,p -> speed magnitude
+    else:                                             # x,y,u,v,p -> vorticity  (Re-discriminating)
         x, y, u, v = d[:, 0], d[:, 1], d[:, 2], d[:, 3]
-        sp = _np.hypot(u, v)
         xu, yu = _np.unique(x), _np.unique(y)
-        G = _np.full((len(yu), len(xu)), _np.nan)
-        G[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = sp
+        U = _np.full((len(yu), len(xu)), _np.nan); U[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = u
+        V = _np.full((len(yu), len(xu)), _np.nan); V[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = v
+        G = _np.gradient(V, xu, axis=1) - _np.gradient(U, yu, axis=0)   # w = dv/dx - du/dy
+        clip = float(_np.nanpercentile(_np.abs(G), 96))                 # clip the thin lid shear layer
+        vmin, vmax = -clip, clip                                        # so interior/corner vortices show
     os.makedirs(os.path.dirname(out), exist_ok=True)
     fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
     ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
-    ax.imshow(G, origin="lower", aspect="auto", cmap="viridis", interpolation="bilinear")
+    ax.imshow(G, origin="lower", aspect="auto", cmap="viridis", interpolation="bilinear", vmin=vmin, vmax=vmax)
     fig.savefig(out, dpi=200)
     _plt.close(fig)
     return True
