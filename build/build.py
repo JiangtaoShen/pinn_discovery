@@ -225,8 +225,9 @@ def extract_stats(html):
 
 # ---------------------------------------------------------------- reference-field thumbnail
 def generate_field(case):
-    """Render the ground-truth solution field to <slug>/field.png (square, viridis).
-    1-D PDEs (t,x,u) -> u(t,x) heatmap; LDC (x,y,u,v,p) -> speed |U| heatmap."""
+    """Render the ground-truth solution field to <slug>/field.png (square, turbo).
+    1-D PDEs (t,x,u) -> u(t,x) heatmap;
+    LDC (x,y,u,v,p)  -> velocity magnitude |U| + streamlines (shows the Re-dependent vortices)."""
     if not HAVE_MPL:
         return False
     app = case.get("ref_app", case["app"])
@@ -238,24 +239,25 @@ def generate_field(case):
     if os.path.isfile(out) and os.path.getmtime(out) >= fresh:
         return True                                   # already up to date
     d = _np.loadtxt(csv, delimiter=",", skiprows=1)
-    vmin = vmax = None
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
+    ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
     if d.shape[1] == 3:                               # t,x,u  -> u(t,x)  (rows=x vert, cols=t horiz)
         a, b, u = d[:, 0], d[:, 1], d[:, 2]
         au, bu = _np.unique(a), _np.unique(b)
         G = _np.full((len(bu), len(au)), _np.nan)
         G[_np.searchsorted(bu, b), _np.searchsorted(au, a)] = u
-    else:                                             # x,y,u,v,p -> vorticity  (Re-discriminating)
+        ax.imshow(G, origin="lower", aspect="auto", cmap="turbo", interpolation="bilinear")
+    else:                                             # x,y,u,v,p -> speed magnitude + streamlines
         x, y, u, v = d[:, 0], d[:, 1], d[:, 2], d[:, 3]
         xu, yu = _np.unique(x), _np.unique(y)
         U = _np.full((len(yu), len(xu)), _np.nan); U[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = u
         V = _np.full((len(yu), len(xu)), _np.nan); V[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = v
-        G = _np.gradient(V, xu, axis=1) - _np.gradient(U, yu, axis=0)   # w = dv/dx - du/dy
-        clip = float(_np.nanpercentile(_np.abs(G), 96))                 # clip the thin lid shear layer
-        vmin, vmax = -clip, clip                                        # so interior/corner vortices show
-    os.makedirs(os.path.dirname(out), exist_ok=True)
-    fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
-    ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
-    ax.imshow(G, origin="lower", aspect="auto", cmap="turbo", interpolation="bilinear", vmin=vmin, vmax=vmax)
+        sp = _np.hypot(U, V)                          # |U| = sqrt(u^2 + v^2): the physical flow field
+        ax.imshow(sp, origin="lower", aspect="auto", cmap="turbo", interpolation="bilinear",
+                  extent=[xu[0], xu[-1], yu[0], yu[-1]])
+        ax.streamplot(xu, yu, U, V, density=1.1, color="white", linewidth=0.6, arrowstyle="-")
+        ax.set_xlim(xu[0], xu[-1]); ax.set_ylim(yu[0], yu[-1])
     fig.savefig(out, dpi=200)
     _plt.close(fig)
     return True
