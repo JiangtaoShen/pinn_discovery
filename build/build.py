@@ -19,7 +19,7 @@ Usage:
   py build/build.py
 then commit & push to deploy via GitHub Pages.
 """
-import os, re, json, sys
+import os, re, json, sys, hashlib
 
 try:
     import numpy as _np
@@ -154,10 +154,12 @@ def highlight_re(tag):
 
 def card_html(c, idx):
     thumb = ""
-    if os.path.isfile(os.path.join(ROOT, c["slug"], "field.png")):
-        thumb = ('        <div class="thumb"><img src="./%s/field.png" '
+    fp = os.path.join(ROOT, c["slug"], "field.png")
+    if os.path.isfile(fp):
+        ver = hashlib.md5(open(fp, "rb").read()).hexdigest()[:8]   # cache-bust when the image changes
+        thumb = ('        <div class="thumb"><img src="./%s/field.png?v=%s" '
                  'alt="%s reference solution field" loading="lazy"></div>\n'
-                 % (c["slug"], c["card_title"]))
+                 % (c["slug"], ver, c["card_title"]))
     return (
         '      <a class="card" href="./%s/index.html">\n' % c["slug"] +
         '        <div class="card-main">\n'
