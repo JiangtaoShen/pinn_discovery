@@ -231,14 +231,20 @@ def generate_field(case):
     if not HAVE_MPL:
         return False
     app = case.get("ref_app", case["app"])
-    csv = os.path.join(SRC, "apps", app, "ref_data.csv")
-    if not os.path.isfile(csv):
+    base = os.path.join(SRC, "apps", app)
+    csv, npz = os.path.join(base, "ref_data.csv"), os.path.join(base, "ref_data.npz")
+    ref = csv if os.path.isfile(csv) else (npz if os.path.isfile(npz) else None)
+    if ref is None:
         return False
     out = os.path.join(ROOT, case["slug"], "field.png")
-    fresh = max(os.path.getmtime(csv), os.path.getmtime(__file__))   # rebuild if data OR this script changed
+    fresh = max(os.path.getmtime(ref), os.path.getmtime(__file__))   # rebuild if data OR this script changed
     if os.path.isfile(out) and os.path.getmtime(out) >= fresh:
         return True                                   # already up to date
-    d = _np.loadtxt(csv, delimiter=",", skiprows=1)
+    if ref.endswith(".npz"):                          # X=(N,2) coords + u=(N,1) scalar field
+        z = _np.load(ref)
+        X = z["X"]; d = _np.column_stack([X[:, 0], X[:, 1], z["u"].reshape(-1)])
+    else:
+        d = _np.loadtxt(ref, delimiter=",", skiprows=1)
     os.makedirs(os.path.dirname(out), exist_ok=True)
     fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
     ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")

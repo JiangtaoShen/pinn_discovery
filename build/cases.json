@@ -30,6 +30,24 @@
       "menu_desc": "Phase-field reaction–diffusion"
     },
     {
+      "app": "pinnconv",
+      "slug": "convection",
+      "title": "PINN Discovery of the Convection Equation",
+      "card_title": "Convection Equation",
+      "card_tag": "Variable-coefficient advection · 1-D PDE",
+      "menu_label": "Convection Equation",
+      "menu_desc": "Variable-coefficient advection"
+    },
+    {
+      "app": "pinnkdv",
+      "slug": "kdv",
+      "title": "PINN Discovery of the Korteweg–de Vries Equation",
+      "card_title": "Korteweg–de Vries",
+      "card_tag": "Dispersive solitons · 1-D PDE",
+      "menu_label": "Korteweg–de Vries",
+      "menu_desc": "Dispersive solitons"
+    },
+    {
       "app": "pinnldc3200",
       "slug": "ldc-re3200",
       "title": "PINN Discovery of Lid-Driven Cavity at Re=3200",
