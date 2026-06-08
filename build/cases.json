@@ -12,15 +12,6 @@
       "menu_desc": "Nonlinear convection–diffusion"
     },
     {
-      "app": "pinnks",
-      "slug": "ks-chaotic",
-      "title": "PINN Discovery of Chaotic Kuramoto–Sivashinsky",
-      "card_title": "Chaotic Kuramoto–Sivashinsky",
-      "card_tag": "Spatiotemporal chaos · 1-D PDE",
-      "menu_label": "Chaotic Kuramoto–Sivashinsky",
-      "menu_desc": "Spatiotemporal chaos"
-    },
-    {
       "app": "pinnac",
       "slug": "allen-cahn",
       "title": "PINN Discovery of the Allen-Cahn Equation",
@@ -28,6 +19,15 @@
       "card_tag": "Phase-field reaction–diffusion · 1-D PDE",
       "menu_label": "Allen-Cahn Equation",
       "menu_desc": "Phase-field reaction–diffusion"
+    },
+    {
+      "app": "pinnkdv",
+      "slug": "kdv",
+      "title": "PINN Discovery of the Korteweg–de Vries Equation",
+      "card_title": "Korteweg–de Vries",
+      "card_tag": "Dispersive solitons · 1-D PDE",
+      "menu_label": "Korteweg–de Vries",
+      "menu_desc": "Dispersive solitons"
     },
     {
       "app": "pinnconv",
@@ -39,13 +39,13 @@
       "menu_desc": "Variable-coefficient advection"
     },
     {
-      "app": "pinnkdv",
-      "slug": "kdv",
-      "title": "PINN Discovery of the Korteweg–de Vries Equation",
-      "card_title": "Korteweg–de Vries",
-      "card_tag": "Dispersive solitons · 1-D PDE",
-      "menu_label": "Korteweg–de Vries",
-      "menu_desc": "Dispersive solitons"
+      "app": "pinnks",
+      "slug": "ks-chaotic",
+      "title": "PINN Discovery of Chaotic Kuramoto–Sivashinsky",
+      "card_title": "Chaotic Kuramoto–Sivashinsky",
+      "card_tag": "Spatiotemporal chaos · 1-D PDE",
+      "menu_label": "Chaotic Kuramoto–Sivashinsky",
+      "menu_desc": "Spatiotemporal chaos"
     },
     {
       "app": "pinnldc3200",
@@ -75,5 +75,5 @@
       "menu_desc": "Steady cavity flow"
     }
   ],
-  "_note": "Add KdV here (app pinnkdv, slug kdv) once its run/dashboard exists. Runtime is auto-read from apps/<app>/problem.md; tree size and best metric are auto-read from the dashboard header."
+  "_note": "Order of this array = display order on the site. Runtime is auto-read from apps/<app>/problem.md; tree size and best metric from the dashboard header; reference field from ref_data.csv or ref_data.npz. pinnsmoke will slot in once its run/dashboard exists."
 }
