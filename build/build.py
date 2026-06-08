@@ -131,11 +131,11 @@ OV_CSS = """  :root{
 
   a.card.wide{grid-column:1 / -1;}
   a.card.wide .card-main{flex:1 1 auto;}
-  a.card.wide .thumb{flex:0 0 auto;width:auto;height:132px;align-self:center;margin-top:0;}
+  a.card.wide .thumb{flex:0 0 auto;width:auto;height:128px;align-self:center;margin-top:0;margin-right:40px;}
   a.card.wide .thumb img{width:auto;height:100%;}
   @media (max-width:760px){
     a.card.wide{flex-direction:column;}
-    a.card.wide .thumb{width:100%;height:auto;}
+    a.card.wide .thumb{width:100%;height:auto;margin-right:0;}
     a.card.wide .thumb img{width:100%;height:auto;}
   }
 
@@ -285,8 +285,14 @@ def generate_field(case):
         V = _np.full((len(yu), len(xu)), _np.nan); V[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = v
         sp = _np.hypot(U, V)                          # |U| = sqrt(u^2 + v^2): the physical flow field
         airfoil = case.get("airfoil")
-        cmap = _plt.get_cmap("turbo").copy()
-        cmap.set_bad("white" if airfoil else "#0b0f1e")   # body hole -> white (airfoil) or dark
+        if airfoil and _np.isnan(sp).any():           # fill body hole (no jagged halo); polygon covers it
+            try:
+                from scipy import ndimage as _ndi
+                _idx = _ndi.distance_transform_edt(_np.isnan(sp), return_distances=False, return_indices=True)
+                sp = sp[tuple(_idx)]                   # nearest-neighbour fill
+            except Exception:
+                sp = _np.nan_to_num(sp)
+        cmap = _plt.get_cmap("turbo").copy(); cmap.set_bad("#0b0f1e")
         if wide:                                       # figure at the data's aspect -> elongated, undistorted
             xr, yr = float(xu[-1] - xu[0]), float(yu[-1] - yu[0])
             fig = _plt.figure(figsize=(3.6, max(0.7, 3.6 * yr / xr)), dpi=dpi)
@@ -296,7 +302,7 @@ def generate_field(case):
         ax.imshow(sp, origin="lower", aspect="auto", cmap=cmap, interpolation="bilinear",
                   extent=[xu[0], xu[-1], yu[0], yu[-1]])
         ax.streamplot(xu, yu, _np.nan_to_num(U), _np.nan_to_num(V),
-                      density=1.5 if wide else 1.1, color="white", linewidth=0.6, arrowstyle="-")
+                      density=1.0 if wide else 1.1, color="white", linewidth=0.6, arrowstyle="-")
         if airfoil == "naca0012":                      # draw the body: white fill + black outline
             px, py = _naca0012_polygon(aoa=float(case.get("aoa", -7.0)))
             ax.fill(px, py, facecolor="white", edgecolor="black", linewidth=1.4, zorder=5)
