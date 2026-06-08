@@ -63,7 +63,7 @@
       <p class="lede">Fully automated PINN Discovery driven by tree search over a curated knowledge base.
         Rather than tuning PINN components in isolation, it designs a complete PINN method in a single pass —
         loss formulation, network architecture, and training strategy together.
-        The eight case studies below demonstrate the approach.
+        The nine case studies below demonstrate the approach.
         Each dashboard shows the full search tree, knowledge matrix, and convergence history.</p>
     </header>
 
@@ -137,9 +137,9 @@
             <p class="ctag">Variable-coefficient advection · 1-D PDE</p>
           </div>
           <div class="stats">
-            <span class="stat"><span class="k">Tree</span><span class="v">71 nodes</span></span>
+            <span class="stat"><span class="k">Tree</span><span class="v">81 nodes</span></span>
             <span class="stat"><span class="k">Runtime</span><span class="v">120 s</span></span>
-            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.02065</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.00091</span></span>
           </div>
         </div>
         <div class="thumb"><img src="./convection/field.png?v=bf2f7729" alt="Convection Equation reference solution field" loading="lazy"></div>
@@ -219,6 +219,25 @@
           </div>
         </div>
         <div class="thumb"><img src="./ldc-re5000/field.png?v=fe5a1f77" alt="Lid-Driven Cavity reference solution field" loading="lazy"></div>
+      </a>
+
+      <a class="card" href="./naca0012/index.html">
+        <div class="card-main">
+          <div class="card-top">
+            <span class="idx">9</span>
+            <span class="arrow">&rarr;</span>
+          </div>
+          <div>
+            <p class="ctitle">NACA0012 Airfoil</p>
+            <p class="ctag">Laminar airfoil flow · <span class="re">Re = 1000</span></p>
+          </div>
+          <div class="stats">
+            <span class="stat"><span class="k">Tree</span><span class="v">301 nodes</span></span>
+            <span class="stat"><span class="k">Runtime</span><span class="v">150 s</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.06908</span></span>
+          </div>
+        </div>
+        <div class="thumb"><img src="./naca0012/field.png?v=adc8b60e" alt="NACA0012 Airfoil reference solution field" loading="lazy"></div>
       </a>
 
     </div>

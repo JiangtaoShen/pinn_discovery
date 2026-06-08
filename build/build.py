@@ -260,9 +260,12 @@ def generate_field(case):
         U = _np.full((len(yu), len(xu)), _np.nan); U[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = u
         V = _np.full((len(yu), len(xu)), _np.nan); V[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = v
         sp = _np.hypot(U, V)                          # |U| = sqrt(u^2 + v^2): the physical flow field
-        ax.imshow(sp, origin="lower", aspect="auto", cmap="turbo", interpolation="bilinear",
+        cmap = _plt.get_cmap("turbo").copy(); cmap.set_bad("#0b0f1e")   # masked holes (airfoil body) -> dark
+        interp = "nearest" if _np.isnan(sp).any() else "bilinear"      # crisp edges when there are holes
+        ax.imshow(sp, origin="lower", aspect="auto", cmap=cmap, interpolation=interp,
                   extent=[xu[0], xu[-1], yu[0], yu[-1]])
-        ax.streamplot(xu, yu, U, V, density=1.1, color="white", linewidth=0.6, arrowstyle="-")
+        ax.streamplot(xu, yu, _np.nan_to_num(U), _np.nan_to_num(V),
+                      density=1.1, color="white", linewidth=0.6, arrowstyle="-")
         ax.set_xlim(xu[0], xu[-1]); ax.set_ylim(yu[0], yu[-1])
     fig.savefig(out, dpi=200)
     _plt.close(fig)
