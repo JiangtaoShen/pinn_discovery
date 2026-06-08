@@ -35,11 +35,13 @@
   @media (max-width:760px){.thumb{width:104px;height:104px;}}
 
   a.card.wide{grid-column:1 / -1;}
-  a.card.wide .card-main{flex:0 0 300px;}
-  a.card.wide .thumb{flex:1 1 auto;width:auto;height:160px;align-self:center;margin-top:0;}
+  a.card.wide .card-main{flex:1 1 auto;}
+  a.card.wide .thumb{flex:0 0 auto;width:auto;height:132px;align-self:center;margin-top:0;}
+  a.card.wide .thumb img{width:auto;height:100%;}
   @media (max-width:760px){
-    a.card.wide .card-main{flex:1 1 auto;}
-    a.card.wide .thumb{flex:0 0 auto;width:104px;height:104px;}
+    a.card.wide{flex-direction:column;}
+    a.card.wide .thumb{width:100%;height:auto;}
+    a.card.wide .thumb img{width:100%;height:auto;}
   }
 
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
@@ -245,7 +247,7 @@
             <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.06908</span></span>
           </div>
         </div>
-        <div class="thumb"><img src="./naca0012/field.png?v=da7f49eb" alt="NACA0012 Airfoil reference solution field" loading="lazy"></div>
+        <div class="thumb"><img src="./naca0012/field.png?v=bf485498" alt="NACA0012 Airfoil reference solution field" loading="lazy"></div>
       </a>
 
     </div>

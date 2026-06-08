@@ -130,11 +130,13 @@ OV_CSS = """  :root{
   @media (max-width:760px){.thumb{width:104px;height:104px;}}
 
   a.card.wide{grid-column:1 / -1;}
-  a.card.wide .card-main{flex:0 0 300px;}
-  a.card.wide .thumb{flex:1 1 auto;width:auto;height:160px;align-self:center;margin-top:0;}
+  a.card.wide .card-main{flex:1 1 auto;}
+  a.card.wide .thumb{flex:0 0 auto;width:auto;height:132px;align-self:center;margin-top:0;}
+  a.card.wide .thumb img{width:auto;height:100%;}
   @media (max-width:760px){
-    a.card.wide .card-main{flex:1 1 auto;}
-    a.card.wide .thumb{flex:0 0 auto;width:104px;height:104px;}
+    a.card.wide{flex-direction:column;}
+    a.card.wide .thumb{width:100%;height:auto;}
+    a.card.wide .thumb img{width:100%;height:auto;}
   }
 
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
@@ -233,6 +235,17 @@ def extract_stats(html):
     return nodes, metric, rr
 
 # ---------------------------------------------------------------- reference-field thumbnail
+def _naca0012_polygon(aoa=-7.0, thickness=0.12, n=250):
+    """Analytic NACA0012 outline (chord [0,1]), rotated by `aoa` deg about (0.5, 0)."""
+    xs = _np.linspace(0.0, 1.0, n)
+    th = 5 * thickness * (0.2969*_np.sqrt(xs) - 0.1260*xs - 0.3516*xs**2 + 0.2843*xs**3 - 0.1015*xs**4)
+    a = _np.radians(aoa); cx, cy = 0.5, 0.0
+    def _rot(px, py):
+        dx, dy = px - cx, py - cy
+        return cx + dx*_np.cos(a) - dy*_np.sin(a), cy + dx*_np.sin(a) + dy*_np.cos(a)
+    xu_, yu_ = _rot(xs, th); xl_, yl_ = _rot(xs, -th)
+    return _np.concatenate([xu_, xl_[::-1]]), _np.concatenate([yu_, yl_[::-1]])
+
 def generate_field(case):
     """Render the ground-truth solution field to <slug>/field.png (square, turbo).
     1-D PDEs (t,x,u) -> u(t,x) heatmap;
@@ -256,12 +269,13 @@ def generate_field(case):
         d = _np.loadtxt(ref, delimiter=",", skiprows=1)
     os.makedirs(os.path.dirname(out), exist_ok=True)
     wide = bool(case.get("wide"))                     # render at true (wide) aspect instead of square
+    dpi = 320 if wide else 200                        # higher resolution for the featured wide tile
     if d.shape[1] == 3:                               # t,x,u  -> u(t,x)  (rows=x vert, cols=t horiz)
         a, b, u = d[:, 0], d[:, 1], d[:, 2]
         au, bu = _np.unique(a), _np.unique(b)
         G = _np.full((len(bu), len(au)), _np.nan)
         G[_np.searchsorted(bu, b), _np.searchsorted(au, a)] = u
-        fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
+        fig = _plt.figure(figsize=(1.8, 1.8), dpi=dpi)
         ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
         ax.imshow(G, origin="lower", aspect="auto", cmap="turbo", interpolation="bilinear")
     else:                                             # x,y,u,v,p -> speed magnitude + streamlines
@@ -270,20 +284,24 @@ def generate_field(case):
         U = _np.full((len(yu), len(xu)), _np.nan); U[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = u
         V = _np.full((len(yu), len(xu)), _np.nan); V[_np.searchsorted(yu, y), _np.searchsorted(xu, x)] = v
         sp = _np.hypot(U, V)                          # |U| = sqrt(u^2 + v^2): the physical flow field
-        cmap = _plt.get_cmap("turbo").copy(); cmap.set_bad("#0b0f1e")   # masked holes (airfoil body) -> dark
-        interp = "nearest" if _np.isnan(sp).any() else "bilinear"      # crisp edges when there are holes
+        airfoil = case.get("airfoil")
+        cmap = _plt.get_cmap("turbo").copy()
+        cmap.set_bad("white" if airfoil else "#0b0f1e")   # body hole -> white (airfoil) or dark
         if wide:                                       # figure at the data's aspect -> elongated, undistorted
             xr, yr = float(xu[-1] - xu[0]), float(yu[-1] - yu[0])
-            fig = _plt.figure(figsize=(3.6, max(0.7, 3.6 * yr / xr)), dpi=200)
+            fig = _plt.figure(figsize=(3.6, max(0.7, 3.6 * yr / xr)), dpi=dpi)
         else:
-            fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
+            fig = _plt.figure(figsize=(1.8, 1.8), dpi=dpi)
         ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
-        ax.imshow(sp, origin="lower", aspect="auto", cmap=cmap, interpolation=interp,
+        ax.imshow(sp, origin="lower", aspect="auto", cmap=cmap, interpolation="bilinear",
                   extent=[xu[0], xu[-1], yu[0], yu[-1]])
         ax.streamplot(xu, yu, _np.nan_to_num(U), _np.nan_to_num(V),
-                      density=1.4 if wide else 1.1, color="white", linewidth=0.6, arrowstyle="-")
+                      density=1.5 if wide else 1.1, color="white", linewidth=0.6, arrowstyle="-")
+        if airfoil == "naca0012":                      # draw the body: white fill + black outline
+            px, py = _naca0012_polygon(aoa=float(case.get("aoa", -7.0)))
+            ax.fill(px, py, facecolor="white", edgecolor="black", linewidth=1.4, zorder=5)
         ax.set_xlim(xu[0], xu[-1]); ax.set_ylim(yu[0], yu[-1])
-    fig.savefig(out, dpi=200)
+    fig.savefig(out, dpi=dpi)
     _plt.close(fig)
     return True
 
