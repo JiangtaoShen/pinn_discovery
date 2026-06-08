@@ -129,6 +129,14 @@ OV_CSS = """  :root{
   .thumb img{width:100%;height:100%;display:block;object-fit:cover;}
   @media (max-width:760px){.thumb{width:104px;height:104px;}}
 
+  a.card.wide{grid-column:1 / -1;}
+  a.card.wide .card-main{flex:0 0 300px;}
+  a.card.wide .thumb{flex:1 1 auto;width:auto;height:160px;align-self:center;margin-top:0;}
+  @media (max-width:760px){
+    a.card.wide .card-main{flex:1 1 auto;}
+    a.card.wide .thumb{flex:0 0 auto;width:104px;height:104px;}
+  }
+
   .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;}
   .idx{font-size:15px;font-weight:700;color:#fff;background:var(--ink);
     width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
@@ -160,8 +168,9 @@ def card_html(c, idx):
         thumb = ('        <div class="thumb"><img src="./%s/field.png?v=%s" '
                  'alt="%s reference solution field" loading="lazy"></div>\n'
                  % (c["slug"], ver, c["card_title"]))
+    cls = "card wide" if c.get("wide") else "card"
     return (
-        '      <a class="card" href="./%s/index.html">\n' % c["slug"] +
+        '      <a class="%s" href="./%s/index.html">\n' % (cls, c["slug"]) +
         '        <div class="card-main">\n'
         '          <div class="card-top">\n'
         '            <span class="idx">%d</span>\n' % idx +
@@ -246,13 +255,14 @@ def generate_field(case):
     else:
         d = _np.loadtxt(ref, delimiter=",", skiprows=1)
     os.makedirs(os.path.dirname(out), exist_ok=True)
-    fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
-    ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
+    wide = bool(case.get("wide"))                     # render at true (wide) aspect instead of square
     if d.shape[1] == 3:                               # t,x,u  -> u(t,x)  (rows=x vert, cols=t horiz)
         a, b, u = d[:, 0], d[:, 1], d[:, 2]
         au, bu = _np.unique(a), _np.unique(b)
         G = _np.full((len(bu), len(au)), _np.nan)
         G[_np.searchsorted(bu, b), _np.searchsorted(au, a)] = u
+        fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
+        ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
         ax.imshow(G, origin="lower", aspect="auto", cmap="turbo", interpolation="bilinear")
     else:                                             # x,y,u,v,p -> speed magnitude + streamlines
         x, y, u, v = d[:, 0], d[:, 1], d[:, 2], d[:, 3]
@@ -262,10 +272,16 @@ def generate_field(case):
         sp = _np.hypot(U, V)                          # |U| = sqrt(u^2 + v^2): the physical flow field
         cmap = _plt.get_cmap("turbo").copy(); cmap.set_bad("#0b0f1e")   # masked holes (airfoil body) -> dark
         interp = "nearest" if _np.isnan(sp).any() else "bilinear"      # crisp edges when there are holes
+        if wide:                                       # figure at the data's aspect -> elongated, undistorted
+            xr, yr = float(xu[-1] - xu[0]), float(yu[-1] - yu[0])
+            fig = _plt.figure(figsize=(3.6, max(0.7, 3.6 * yr / xr)), dpi=200)
+        else:
+            fig = _plt.figure(figsize=(1.8, 1.8), dpi=200)
+        ax = fig.add_axes([0, 0, 1, 1]); ax.axis("off")
         ax.imshow(sp, origin="lower", aspect="auto", cmap=cmap, interpolation=interp,
                   extent=[xu[0], xu[-1], yu[0], yu[-1]])
         ax.streamplot(xu, yu, _np.nan_to_num(U), _np.nan_to_num(V),
-                      density=1.1, color="white", linewidth=0.6, arrowstyle="-")
+                      density=1.4 if wide else 1.1, color="white", linewidth=0.6, arrowstyle="-")
         ax.set_xlim(xu[0], xu[-1]); ax.set_ylim(yu[0], yu[-1])
     fig.savefig(out, dpi=200)
     _plt.close(fig)

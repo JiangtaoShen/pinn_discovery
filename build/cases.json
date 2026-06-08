@@ -81,7 +81,8 @@
       "card_title": "NACA0012 Airfoil",
       "card_tag": "Laminar airfoil flow · Re = 1000",
       "menu_label": "NACA0012 — Re 1000",
-      "menu_desc": "Laminar airfoil flow"
+      "menu_desc": "Laminar airfoil flow",
+      "wide": true
     }
   ],
   "_note": "Order of this array = display order on the site. Runtime is auto-read from apps/<app>/problem.md; tree size and best metric from the dashboard header; reference field from ref_data.csv or ref_data.npz. pinnsmoke will slot in once its run/dashboard exists."
