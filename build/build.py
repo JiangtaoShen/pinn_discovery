@@ -302,7 +302,8 @@ def generate_field(case):
         ax.imshow(sp, origin="lower", aspect="auto", cmap=cmap, interpolation="bilinear",
                   extent=[xu[0], xu[-1], yu[0], yu[-1]])
         ax.streamplot(xu, yu, _np.nan_to_num(U), _np.nan_to_num(V),
-                      density=1.0 if wide else 1.1, color="white", linewidth=0.6, arrowstyle="-")
+                      density=0.8 if wide else 1.1, color="white",
+                      linewidth=0.4 if wide else 0.6, arrowstyle="-")
         if airfoil == "naca0012":                      # draw the body: white fill + black outline
             px, py = _naca0012_polygon(aoa=float(case.get("aoa", -7.0)))
             ax.fill(px, py, facecolor="white", edgecolor="black", linewidth=1.4, zorder=5)
