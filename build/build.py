@@ -105,8 +105,12 @@ OV_CSS = """  :root{
     --accent:#1f6feb; --chip:#eef2f7;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;min-height:100%;background:var(--bg);color:var(--ink);
+  html,body{margin:0;padding:0;min-height:100%;color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;}
+  body{background:
+    radial-gradient(1100px 520px at 85% -5%, #e0ebfa 0%, rgba(238,238,238,0) 60%),
+    radial-gradient(900px 460px at -10% 30%, #e8e6f7 0%, rgba(238,238,238,0) 55%),
+    var(--bg);}
   .wrap{max-width:1120px;margin:0 auto;padding:64px 28px 80px;}
   header.page{margin-bottom:40px;}
   .eyebrow{font-size:15px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);}
@@ -126,7 +130,8 @@ OV_CSS = """  :root{
   .card-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:14px;}
   .thumb{flex:0 0 auto;align-self:flex-start;margin-top:26px;width:128px;height:128px;border-radius:12px;overflow:hidden;
     background:#1b1f3a;box-shadow:inset 0 0 0 1px rgba(15,23,42,.12);}
-  .thumb img{width:100%;height:100%;display:block;object-fit:cover;}
+  .thumb img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .25s ease;}
+  a.card:hover .thumb img{transform:scale(1.045);}
   @media (max-width:760px){.thumb{width:104px;height:104px;}}
 
   a.card.wide{grid-column:1 / -1;}
@@ -198,6 +203,12 @@ def build_overview(cases):
     return (
         '<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        '<meta name="description" content="Fully automated PINN discovery via tree search over a curated '
+        'knowledge base — ' + nword + ' PDE benchmark case studies with full search trees and convergence history.">\n'
+        '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' '
+        'viewBox=\'0 0 64 64\'%3E%3Crect width=\'64\' height=\'64\' rx=\'14\' fill=\'%231f6feb\'/%3E'
+        '%3Cpath d=\'M8 38c6-14 10-14 16 0s10 14 16 0 10-14 16 0\' fill=\'none\' stroke=\'%23fff\' '
+        'stroke-width=\'6\' stroke-linecap=\'round\'/%3E%3C/svg%3E">\n'
         '<title>' + SITE + ' · Overview</title>\n<style>\n' + OV_CSS + '\n</style>\n'
         '</head>\n<body>\n  <div class="wrap">\n    <header class="page">\n'
         '      <div class="eyebrow">Physics-Informed Neural Networks</div>\n'
@@ -235,6 +246,49 @@ def extract_stats(html):
     return nodes, metric, rr
 
 # ---------------------------------------------------------------- reference-field thumbnail
+def _render_smoke(case, ref, out, dpi=200):
+    """Wildfire-smoke tile: u(t,x,y) snapshots at +24/+48/+72 h on the lon/lat map
+    (Quebec, June 2023), fire-source marker, arrows between the three panels."""
+    from matplotlib.colors import PowerNorm
+    z = _np.load(ref)
+    X, u = z["X"], z["u"].reshape(-1)
+    tu, xu, yu = _np.unique(X[:, 0]), _np.unique(X[:, 1]), _np.unique(X[:, 2])
+    G = _np.full((len(tu), len(yu), len(xu)), _np.nan, dtype=_np.float32)
+    G[_np.searchsorted(tu, X[:, 0]), _np.searchsorted(yu, X[:, 2]), _np.searchsorted(xu, X[:, 1])] = u
+    LON0, LON1, LAT0, LAT1 = -88, -58, 37, 56        # physical domain (problem.md)
+    lon, lat = LON0 + xu * (LON1 - LON0), LAT0 + yu * (LAT1 - LAT0)
+    norm = PowerNorm(0.45, vmin=0, vmax=float(_np.nanmax(G)))   # lift the faint plume tail
+    fire = (-76.88, 49.00)                           # argmax of the GFAS emission field
+    fig = _plt.figure(figsize=(6.6, 1.30), dpi=dpi)
+    gs = fig.add_gridspec(1, 3, left=0.045, right=0.995, top=0.97, bottom=0.175, wspace=0.16)
+    for i, h in enumerate((24, 48, 72)):
+        ax = fig.add_subplot(gs[0, i])
+        ax.pcolormesh(lon, lat, G[int(round(h / 72 * (len(tu) - 1)))],
+                      cmap="turbo", norm=norm, shading="gouraud")
+        ax.set_xlim(LON0, LON1); ax.set_ylim(LAT0, LAT1)
+        ax.set_xticks([-85, -75, -65]); ax.set_xticklabels(["85°W", "75°W", "65°W"], fontsize=6.5)
+        if i == 0:
+            ax.set_yticks([40, 45, 50, 55])
+            ax.set_yticklabels(["40°N", "45°N", "50°N", "55°N"], fontsize=6.5)
+        else:
+            ax.set_yticks([])
+        ax.tick_params(length=1.5, pad=1.5, colors="#475569")
+        for s in ax.spines.values():
+            s.set_color("#94a3b8"); s.set_linewidth(0.6)
+        ax.text(0.035, 0.93, "+%d h" % h, transform=ax.transAxes, fontsize=8,
+                fontweight="bold", color="#0f172a", va="top", ha="left",
+                bbox=dict(boxstyle="round,pad=0.28", fc="white", ec="none", alpha=0.92))
+        ax.plot(*fire, marker="^", ms=4.5, mfc="#ff3b30", mec="white", mew=0.5, ls="none")
+        if i == 0:
+            ax.annotate("Québec fires", xy=fire, xytext=(fire[0] + 1.2, fire[1] + 2.6),
+                        fontsize=6.3, color="white", fontweight="bold")
+        if i < 2:
+            bb = ax.get_position()
+            fig.text(bb.x1 + 0.013, 0.55, "→", fontsize=15, color="#475569",
+                     ha="center", va="center", fontweight="bold")
+    fig.savefig(out, dpi=dpi, facecolor="white")
+    _plt.close(fig)
+
 def _naca0012_polygon(aoa=-7.0, thickness=0.12, n=250):
     """Analytic NACA0012 outline (chord [0,1]), rotated by `aoa` deg about (0.5, 0)."""
     xs = _np.linspace(0.0, 1.0, n)
@@ -262,6 +316,10 @@ def generate_field(case):
     fresh = max(os.path.getmtime(ref), os.path.getmtime(__file__))   # rebuild if data OR this script changed
     if os.path.isfile(out) and os.path.getmtime(out) >= fresh:
         return True                                   # already up to date
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    if case.get("renderer") == "smoke":               # 2D+t tracer -> 24/48/72 h map panels
+        _render_smoke(case, ref, out)
+        return True
     if ref.endswith(".npz"):                          # X=(N,2) coords + u=(N,1) scalar field
         z = _np.load(ref)
         X = z["X"]; d = _np.column_stack([X[:, 0], X[:, 1], z["u"].reshape(-1)])

@@ -85,6 +85,17 @@
       "wide": true,
       "airfoil": "naca0012",
       "aoa": -7
+    },
+    {
+      "app": "pinnsmoke",
+      "slug": "wildfire-smoke",
+      "title": "PINN Discovery of Wildfire Smoke Transport",
+      "card_title": "Wildfire Smoke Transport",
+      "card_tag": "Real-data advection–diffusion · Québec, June 2023",
+      "menu_label": "Wildfire Smoke",
+      "menu_desc": "Real-data advection–diffusion",
+      "wide": true,
+      "renderer": "smoke"
     }
   ],
   "_note": "Order of this array = display order on the site. Runtime is auto-read from apps/<app>/problem.md; tree size and best metric from the dashboard header; reference field from ref_data.csv or ref_data.npz. pinnsmoke will slot in once its run/dashboard exists."

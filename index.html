@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fully automated PINN discovery via tree search over a curated knowledge base — ten PDE benchmark case studies with full search trees and convergence history.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f6feb'/%3E%3Cpath d='M8 38c6-14 10-14 16 0s10 14 16 0 10-14 16 0' fill='none' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>PINN Discovery · Overview</title>
 <style>
   :root{
@@ -10,8 +12,12 @@
     --accent:#1f6feb; --chip:#eef2f7;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;min-height:100%;background:var(--bg);color:var(--ink);
+  html,body{margin:0;padding:0;min-height:100%;color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;}
+  body{background:
+    radial-gradient(1100px 520px at 85% -5%, #e0ebfa 0%, rgba(238,238,238,0) 60%),
+    radial-gradient(900px 460px at -10% 30%, #e8e6f7 0%, rgba(238,238,238,0) 55%),
+    var(--bg);}
   .wrap{max-width:1120px;margin:0 auto;padding:64px 28px 80px;}
   header.page{margin-bottom:40px;}
   .eyebrow{font-size:15px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);}
@@ -31,7 +37,8 @@
   .card-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:14px;}
   .thumb{flex:0 0 auto;align-self:flex-start;margin-top:26px;width:128px;height:128px;border-radius:12px;overflow:hidden;
     background:#1b1f3a;box-shadow:inset 0 0 0 1px rgba(15,23,42,.12);}
-  .thumb img{width:100%;height:100%;display:block;object-fit:cover;}
+  .thumb img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .25s ease;}
+  a.card:hover .thumb img{transform:scale(1.045);}
   @media (max-width:760px){.thumb{width:104px;height:104px;}}
 
   a.card.wide{grid-column:1 / -1;}
@@ -73,7 +80,7 @@
       <p class="lede">Fully automated PINN Discovery driven by tree search over a curated knowledge base.
         Rather than tuning PINN components in isolation, it designs a complete PINN method in a single pass —
         loss formulation, network architecture, and training strategy together.
-        The nine case studies below demonstrate the approach.
+        The ten case studies below demonstrate the approach.
         Each dashboard shows the full search tree, knowledge matrix, and convergence history.</p>
     </header>
 
@@ -248,6 +255,25 @@
           </div>
         </div>
         <div class="thumb"><img src="./naca0012/field.png?v=5d7dc503" alt="NACA0012 Airfoil reference solution field" loading="lazy"></div>
+      </a>
+
+      <a class="card wide" href="./wildfire-smoke/index.html">
+        <div class="card-main">
+          <div class="card-top">
+            <span class="idx">10</span>
+            <span class="arrow">&rarr;</span>
+          </div>
+          <div>
+            <p class="ctitle">Wildfire Smoke Transport</p>
+            <p class="ctag">Real-data advection–diffusion · Québec, June 2023</p>
+          </div>
+          <div class="stats">
+            <span class="stat"><span class="k">Tree</span><span class="v">201 nodes</span></span>
+            <span class="stat"><span class="k">Runtime</span><span class="v">300 s</span></span>
+            <span class="stat"><span class="k">Best rRMSE</span><span class="v good">0.24060</span></span>
+          </div>
+        </div>
+        <div class="thumb"><img src="./wildfire-smoke/field.png?v=66ef83be" alt="Wildfire Smoke Transport reference solution field" loading="lazy"></div>
       </a>
 
     </div>
