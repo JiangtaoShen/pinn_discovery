@@ -172,9 +172,10 @@ def card_html(c, idx):
     fp = os.path.join(ROOT, c["slug"], "field.png")
     if os.path.isfile(fp):
         ver = hashlib.md5(open(fp, "rb").read()).hexdigest()[:8]   # cache-bust when the image changes
-        thumb = ('        <div class="thumb"><img src="./%s/field.png?v=%s" '
+        style = ' style="height:%dpx"' % c["thumb_h"] if c.get("thumb_h") else ""
+        thumb = ('        <div class="thumb"%s><img src="./%s/field.png?v=%s" '
                  'alt="%s reference solution field" loading="lazy"></div>\n'
-                 % (c["slug"], ver, c["card_title"]))
+                 % (style, c["slug"], ver, c["card_title"]))
     cls = "card wide" if c.get("wide") else "card"
     return (
         '      <a class="%s" href="./%s/index.html">\n' % (cls, c["slug"]) +
@@ -260,8 +261,8 @@ def _render_smoke(case, ref, out, dpi=200):
     norm = PowerNorm(0.45, vmin=0, vmax=float(_np.nanmax(G)))   # lift the faint plume tail
     fire = (-76.88, 49.00)                           # argmax of the GFAS emission field
     nyc = (-74.01, 40.71)                            # New York reference marker
-    fig = _plt.figure(figsize=(5.4, 1.30), dpi=dpi)
-    gs = fig.add_gridspec(1, 3, left=0.058, right=0.995, top=0.97, bottom=0.175, wspace=0.06)
+    fig = _plt.figure(figsize=(5.4, 1.56), dpi=dpi)   # 1.2x taller than the square-tile aspect
+    gs = fig.add_gridspec(1, 3, left=0.058, right=0.995, top=0.975, bottom=0.15, wspace=0.06)
     for i, h in enumerate((24, 48, 72)):
         ax = fig.add_subplot(gs[0, i])
         ax.pcolormesh(lon, lat, G[int(round(h / 72 * (len(tu) - 1)))],
@@ -275,19 +276,19 @@ def _render_smoke(case, ref, out, dpi=200):
             ax.tick_params(labelleft=False)
         ax.tick_params(length=1.5, pad=1.5, colors="#475569")
         ax.set_axisbelow(False)                       # graticule over the field
-        ax.grid(True, color="white", alpha=0.25, linewidth=0.4, linestyle="--")
+        ax.grid(True, color="white", alpha=0.45, linewidth=0.55, linestyle="--")
         for s in ax.spines.values():
             s.set_color("#94a3b8"); s.set_linewidth(0.6)
         ax.text(0.045, 0.93, "+%d h" % h, transform=ax.transAxes, fontsize=8,
                 fontweight="bold", color="#0f172a", va="top", ha="left",
                 bbox=dict(boxstyle="round,pad=0.28", fc="white", ec="none", alpha=0.92))
         ax.plot(*fire, marker="^", ms=4.5, mfc="#ff3b30", mec="white", mew=0.5, ls="none")
-        ax.plot(*nyc, marker="o", ms=2.6, mfc="white", mec="#0f172a", mew=0.5, ls="none")
+        ax.plot(*nyc, marker="o", ms=3.6, mfc="white", mec="#0f172a", mew=0.7, ls="none")
         if i == 0:
             ax.annotate("Québec fires", xy=fire, xytext=(fire[0] + 1.2, fire[1] + 2.6),
                         fontsize=6.3, color="white", fontweight="bold")
-            ax.annotate("New York", xy=nyc, xytext=(nyc[0] + 1.3, nyc[1] + 1.1),
-                        fontsize=6.0, color="white")
+        ax.annotate("New York", xy=nyc, xytext=(nyc[0] + 1.1, nyc[1] + 1.2),
+                    fontsize=6.6, color="white", fontweight="bold")
     fig.savefig(out, dpi=dpi, facecolor="white")
     _plt.close(fig)
 
