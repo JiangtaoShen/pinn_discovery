@@ -259,33 +259,35 @@ def _render_smoke(case, ref, out, dpi=200):
     lon, lat = LON0 + xu * (LON1 - LON0), LAT0 + yu * (LAT1 - LAT0)
     norm = PowerNorm(0.45, vmin=0, vmax=float(_np.nanmax(G)))   # lift the faint plume tail
     fire = (-76.88, 49.00)                           # argmax of the GFAS emission field
-    fig = _plt.figure(figsize=(6.6, 1.30), dpi=dpi)
-    gs = fig.add_gridspec(1, 3, left=0.045, right=0.995, top=0.97, bottom=0.175, wspace=0.16)
+    nyc = (-74.01, 40.71)                            # New York reference marker
+    fig = _plt.figure(figsize=(5.4, 1.30), dpi=dpi)
+    gs = fig.add_gridspec(1, 3, left=0.058, right=0.995, top=0.97, bottom=0.175, wspace=0.06)
     for i, h in enumerate((24, 48, 72)):
         ax = fig.add_subplot(gs[0, i])
         ax.pcolormesh(lon, lat, G[int(round(h / 72 * (len(tu) - 1)))],
                       cmap="turbo", norm=norm, shading="gouraud")
         ax.set_xlim(LON0, LON1); ax.set_ylim(LAT0, LAT1)
         ax.set_xticks([-85, -75, -65]); ax.set_xticklabels(["85°W", "75°W", "65°W"], fontsize=6.5)
+        ax.set_yticks([40, 45, 50, 55])
         if i == 0:
-            ax.set_yticks([40, 45, 50, 55])
             ax.set_yticklabels(["40°N", "45°N", "50°N", "55°N"], fontsize=6.5)
         else:
-            ax.set_yticks([])
+            ax.tick_params(labelleft=False)
         ax.tick_params(length=1.5, pad=1.5, colors="#475569")
+        ax.set_axisbelow(False)                       # graticule over the field
+        ax.grid(True, color="white", alpha=0.25, linewidth=0.4, linestyle="--")
         for s in ax.spines.values():
             s.set_color("#94a3b8"); s.set_linewidth(0.6)
-        ax.text(0.035, 0.93, "+%d h" % h, transform=ax.transAxes, fontsize=8,
+        ax.text(0.045, 0.93, "+%d h" % h, transform=ax.transAxes, fontsize=8,
                 fontweight="bold", color="#0f172a", va="top", ha="left",
                 bbox=dict(boxstyle="round,pad=0.28", fc="white", ec="none", alpha=0.92))
         ax.plot(*fire, marker="^", ms=4.5, mfc="#ff3b30", mec="white", mew=0.5, ls="none")
+        ax.plot(*nyc, marker="o", ms=2.6, mfc="white", mec="#0f172a", mew=0.5, ls="none")
         if i == 0:
             ax.annotate("Québec fires", xy=fire, xytext=(fire[0] + 1.2, fire[1] + 2.6),
                         fontsize=6.3, color="white", fontweight="bold")
-        if i < 2:
-            bb = ax.get_position()
-            fig.text(bb.x1 + 0.013, 0.55, "→", fontsize=15, color="#475569",
-                     ha="center", va="center", fontweight="bold")
+            ax.annotate("New York", xy=nyc, xytext=(nyc[0] + 1.3, nyc[1] + 1.1),
+                        fontsize=6.0, color="white")
     fig.savefig(out, dpi=dpi, facecolor="white")
     _plt.close(fig)
 
