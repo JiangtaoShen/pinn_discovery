@@ -162,8 +162,7 @@ OV_CSS = """  :root{
     font-feature-settings:"tnum";margin-top:2px;}
   .stat .v.good{color:var(--accent);}
 
-  .soon{margin-top:26px;padding:24px;border:1.5px dashed #cfd6dd;border-radius:16px;text-align:center;
-    color:var(--muted);font-size:15px;font-weight:600;background:rgba(255,255,255,.45);}"""
+"""
 
 def highlight_re(tag):
     return re.sub(r"(Re = \d+)", r'<span class="re">\1</span>', tag)
@@ -225,8 +224,7 @@ def build_overview(cases):
         '        and convergence history.</p>\n'
         '    </header>\n\n    <div class="grid">\n\n'
         + cards +
-        '\n\n    </div>\n\n'
-        '    <div class="soon">More case studies coming soon…</div>\n'
+        '\n\n    </div>\n'
         '  </div>\n</body>\n</html>\n'
     )
 
