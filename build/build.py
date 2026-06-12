@@ -262,14 +262,14 @@ def _render_smoke(case, ref, out, dpi=200):
     fire = (-76.88, 49.00)                           # argmax of the GFAS emission field
     nyc = (-74.01, 40.71)                            # New York reference marker
     fig = _plt.figure(figsize=(5.4, 1.2234), dpi=dpi)  # same total aspect as the NACA tile (~4.41:1)
-    gs = fig.add_gridspec(1, 3, left=0.058, right=0.995, top=0.965, bottom=0.035, wspace=0.06)
+    gs = fig.add_gridspec(1, 3, left=0.058, right=0.995, top=0.965, bottom=0.13, wspace=0.06)
     for i, h in enumerate((24, 48, 72)):
         ax = fig.add_subplot(gs[0, i])
         ax.pcolormesh(lon, lat, G[int(round(h / 72 * (len(tu) - 1)))],
                       cmap="turbo", norm=norm, shading="gouraud")
         ax.set_xlim(LON0, LON1); ax.set_ylim(LAT0, LAT1)
-        ax.set_xticks([-85, -75, -65])                # ticks only feed the graticule — no lon labels
-        ax.tick_params(labelbottom=False)
+        ax.set_xticks([-85, -75, -65])
+        ax.set_xticklabels(["85°W", "75°W", "65°W"], fontsize=6.5)
         ax.set_yticks([40, 45, 50, 55])
         if i == 0:
             ax.set_yticklabels(["40°N", "45°N", "50°N", "55°N"], fontsize=6.5)
