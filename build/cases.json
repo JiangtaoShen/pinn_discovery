@@ -14,20 +14,20 @@
     {
       "app": "pinnac",
       "slug": "allen-cahn",
-      "title": "PINN Discovery of the Allen-Cahn Equation",
-      "card_title": "Allen-Cahn Equation",
+      "title": "PINN Discovery of the Allen–Cahn Equation",
+      "card_title": "Allen–Cahn Equation",
       "card_tag": "Phase-field reaction–diffusion · 1-D PDE",
-      "menu_label": "Allen-Cahn Equation",
+      "menu_label": "Allen–Cahn Equation",
       "menu_desc": "Phase-field reaction–diffusion"
     },
     {
       "app": "pinnkdv",
       "slug": "kdv",
       "title": "PINN Discovery of the Korteweg–de Vries Equation",
-      "card_title": "Korteweg–de Vries",
-      "card_tag": "Dispersive solitons · 1-D PDE",
+      "card_title": "Korteweg–de Vries Equation",
+      "card_tag": "Soliton dynamics · 1-D PDE",
       "menu_label": "Korteweg–de Vries",
-      "menu_desc": "Dispersive solitons"
+      "menu_desc": "Soliton dynamics"
     },
     {
       "app": "pinnconv",
@@ -41,16 +41,16 @@
     {
       "app": "pinnks",
       "slug": "ks-chaotic",
-      "title": "PINN Discovery of Chaotic Kuramoto–Sivashinsky",
-      "card_title": "Chaotic Kuramoto–Sivashinsky",
+      "title": "PINN Discovery of the Kuramoto–Sivashinsky Equation",
+      "card_title": "Kuramoto–Sivashinsky Equation",
       "card_tag": "Spatiotemporal chaos · 1-D PDE",
-      "menu_label": "Chaotic Kuramoto–Sivashinsky",
+      "menu_label": "Kuramoto–Sivashinsky",
       "menu_desc": "Spatiotemporal chaos"
     },
     {
       "app": "pinnldc3200",
       "slug": "ldc-re3200",
-      "title": "PINN Discovery of Lid-Driven Cavity at Re=3200",
+      "title": "PINN Discovery of Lid-Driven Cavity Flow at Re = 3200",
       "card_title": "Lid-Driven Cavity",
       "card_tag": "Steady incompressible flow · Re = 3200",
       "menu_label": "Lid-Driven Cavity — Re 3200",
@@ -59,7 +59,7 @@
     {
       "app": "pinnldc3200400",
       "slug": "ldc-re3200-extended",
-      "title": "PINN Discovery of Lid-Driven Cavity at Re=3200 (Extended Search)",
+      "title": "PINN Discovery of Lid-Driven Cavity Flow at Re = 3200 (Extended Search)",
       "card_title": "Lid-Driven Cavity",
       "card_tag": "Steady incompressible flow · Re = 3200",
       "menu_label": "Lid-Driven Cavity — Re 3200",
@@ -68,7 +68,7 @@
     {
       "app": "pinnldc5000",
       "slug": "ldc-re5000",
-      "title": "PINN Discovery of Lid-Driven Cavity at Re=5000",
+      "title": "PINN Discovery of Lid-Driven Cavity Flow at Re = 5000",
       "card_title": "Lid-Driven Cavity",
       "card_tag": "Steady incompressible flow · Re = 5000",
       "menu_label": "Lid-Driven Cavity — Re 5000",
@@ -77,11 +77,11 @@
     {
       "app": "pinnnaca1000",
       "slug": "naca0012",
-      "title": "PINN Discovery of NACA0012 Airfoil at Re=1000",
+      "title": "PINN Discovery of NACA0012 Airfoil Flow at Re = 1000",
       "card_title": "NACA0012 Airfoil",
-      "card_tag": "Laminar airfoil flow · Re = 1000",
+      "card_tag": "Steady incompressible flow · Re = 1000",
       "menu_label": "NACA0012 — Re 1000",
-      "menu_desc": "Laminar airfoil flow",
+      "menu_desc": "Steady airfoil flow",
       "wide": true,
       "airfoil": "naca0012",
       "aoa": -7
@@ -99,5 +99,5 @@
       "thumb_h": 154
     }
   ],
-  "_note": "Order of this array = display order on the site. Runtime is auto-read from apps/<app>/problem.md; tree size and best metric from the dashboard header; reference field from ref_data.csv or ref_data.npz. pinnsmoke will slot in once its run/dashboard exists."
+  "_note": "Order of this array = display order on the site. Runtime is auto-read from apps/<app>/problem.md; tree size and best metric from the dashboard header; reference field from ref_data.csv or ref_data.npz."
 }
