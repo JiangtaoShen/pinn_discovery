@@ -261,8 +261,8 @@ def _render_smoke(case, ref, out, dpi=200):
     norm = PowerNorm(0.45, vmin=0, vmax=float(_np.nanmax(G)))   # lift the faint plume tail
     fire = (-76.88, 49.00)                           # argmax of the GFAS emission field
     nyc = (-74.01, 40.71)                            # New York reference marker
-    fig = _plt.figure(figsize=(5.4, 1.2234), dpi=dpi)  # same total aspect as the NACA tile (~4.41:1)
-    gs = fig.add_gridspec(1, 3, left=0.058, right=0.995, top=0.965, bottom=0.13, wspace=0.06)
+    fig = _plt.figure(figsize=(5.4, 1.581), dpi=dpi)   # displays 1.3x taller than square tiles, same width as NACA
+    gs = fig.add_gridspec(1, 3, left=0.058, right=0.995, top=0.972, bottom=0.105, wspace=0.06)
     for i, h in enumerate((24, 48, 72)):
         ax = fig.add_subplot(gs[0, i])
         ax.pcolormesh(lon, lat, G[int(round(h / 72 * (len(tu) - 1)))],
