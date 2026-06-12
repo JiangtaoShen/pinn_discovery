@@ -23,6 +23,7 @@
   .eyebrow{font-size:15px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);}
   h1{font-size:40px;line-height:1.12;margin:12px 0 10px;font-weight:750;letter-spacing:-.01em;}
   .lede{font-size:17px;color:var(--muted);max-width:680px;line-height:1.55;margin:0;}
+  .lede strong{color:var(--ink);font-weight:700;}
 
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:40px;}
   @media (max-width:760px){.grid{grid-template-columns:1fr;} h1{font-size:32px;}}
@@ -77,12 +78,14 @@
     <header class="page">
       <div class="eyebrow">Physics-Informed Neural Networks</div>
       <h1>PINN Discovery</h1>
-      <p class="lede">PINN Discovery couples PUCT tree search with LLM agents to design
-        physics-informed neural networks end-to-end. Each node in the tree is a complete, runnable
-        method — loss formulation, network architecture, and training strategy in one program —
-        trained under a strict wall-clock budget and scored against a held-out reference solution.
-        A curated corpus of 130 PINN papers seeds and steers the search.
-        The ten case studies below each show the full search tree, knowledge matrix, and convergence history.</p>
+      <p class="lede">PINN Discovery automates the end-to-end design of physics-informed neural
+        networks with two key innovations. <strong>PUCT tree search</strong> treats every candidate as a
+        complete, runnable method — loss formulation, network architecture, and training strategy in one
+        program — trains it under a strict wall-clock budget, scores it against a held-out reference, and
+        keeps improving along the paths that pay off. A <strong>knowledge base of 130 PINN papers</strong>
+        grounds the search: it seeds the tree with faithful re-implementations and steers every step as
+        inspiration. The ten case studies below each show the full search tree, knowledge matrix,
+        and convergence history.</p>
     </header>
 
     <div class="grid">

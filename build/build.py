@@ -116,6 +116,7 @@ OV_CSS = """  :root{
   .eyebrow{font-size:15px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);}
   h1{font-size:40px;line-height:1.12;margin:12px 0 10px;font-weight:750;letter-spacing:-.01em;}
   .lede{font-size:17px;color:var(--muted);max-width:680px;line-height:1.55;margin:0;}
+  .lede strong{color:var(--ink);font-weight:700;}
 
   .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:40px;}
   @media (max-width:760px){.grid{grid-template-columns:1fr;} h1{font-size:32px;}}
@@ -214,12 +215,14 @@ def build_overview(cases):
         '</head>\n<body>\n  <div class="wrap">\n    <header class="page">\n'
         '      <div class="eyebrow">Physics-Informed Neural Networks</div>\n'
         '      <h1>' + SITE + '</h1>\n'
-        '      <p class="lede">' + SITE + ' couples PUCT tree search with LLM agents to design\n'
-        '        physics-informed neural networks end-to-end. Each node in the tree is a complete, runnable\n'
-        '        method — loss formulation, network architecture, and training strategy in one program —\n'
-        '        trained under a strict wall-clock budget and scored against a held-out reference solution.\n'
-        '        A curated corpus of 130 PINN papers seeds and steers the search.\n'
-        '        The ' + nword + ' case studies below each show the full search tree, knowledge matrix, and convergence history.</p>\n'
+        '      <p class="lede">' + SITE + ' automates the end-to-end design of physics-informed neural\n'
+        '        networks with two key innovations. <strong>PUCT tree search</strong> treats every candidate as a\n'
+        '        complete, runnable method — loss formulation, network architecture, and training strategy in one\n'
+        '        program — trains it under a strict wall-clock budget, scores it against a held-out reference, and\n'
+        '        keeps improving along the paths that pay off. A <strong>knowledge base of 130 PINN papers</strong>\n'
+        '        grounds the search: it seeds the tree with faithful re-implementations and steers every step as\n'
+        '        inspiration. The ' + nword + ' case studies below each show the full search tree, knowledge matrix,\n'
+        '        and convergence history.</p>\n'
         '    </header>\n\n    <div class="grid">\n\n'
         + cards +
         '\n\n    </div>\n\n'
