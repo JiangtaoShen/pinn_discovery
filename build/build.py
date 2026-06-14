@@ -287,9 +287,8 @@ def _render_smoke(case, ref, out, dpi=200):
                 bbox=dict(boxstyle="round,pad=0.28", fc="white", ec="none", alpha=0.92))
         ax.plot(*fire, marker="^", ms=4.5, mfc="#ff3b30", mec="white", mew=0.5, ls="none")
         ax.plot(*nyc, marker="o", ms=3.6, mfc="white", mec="#0f172a", mew=0.7, ls="none")
-        if i == 0:
-            ax.annotate("Québec fires", xy=fire, xytext=(fire[0] + 1.2, fire[1] + 2.6),
-                        fontsize=6.3, color="white", fontweight="bold")
+        ax.annotate("Québec", xy=fire, xytext=(fire[0] + 1.2, fire[1] + 1.7),
+                    fontsize=6.6, color="white", fontweight="bold")
         ax.annotate("New York", xy=nyc, xytext=(nyc[0] + 1.1, nyc[1] + 1.2),
                     fontsize=6.6, color="white", fontweight="bold")
     fig.savefig(out, dpi=dpi, facecolor="white")
